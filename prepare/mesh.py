@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 import torch
 
+
 def fill_mesh(mesh2fill, file: str, opt):
     load_path = get_mesh_path(file, opt.num_aug)
     if os.path.exists(load_path):
@@ -17,6 +18,8 @@ def fill_mesh(mesh2fill, file: str, opt):
                             filename=mesh_data.filename, sides=mesh_data.sides,
                             edge_lengths=mesh_data.edge_lengths, edge_areas=mesh_data.edge_areas,
                             features=mesh_data.features)
+    print(load_path)
+    # exit(0)
     mesh2fill.vs = mesh_data['vs']
     mesh2fill.edges = mesh_data['edges']
     mesh2fill.gemm_edges = mesh_data['gemm_edges']
@@ -29,6 +32,7 @@ def fill_mesh(mesh2fill, file: str, opt):
     mesh2fill.features = mesh_data['features']
     mesh2fill.sides = mesh_data['sides']
 
+
 def get_mesh_path(file: str, num_aug: int):
     filename, _ = os.path.splitext(file)
     dir_name = os.path.dirname(filename)
@@ -39,8 +43,8 @@ def get_mesh_path(file: str, num_aug: int):
         os.makedirs(load_dir, exist_ok=True)
     return load_file
 
-def from_scratch(file, opt):
 
+def from_scratch(file, opt):
     class MeshPrep:
         def __getitem__(self, item):
             return eval('self.' + item)
@@ -64,6 +68,7 @@ def from_scratch(file, opt):
         post_augmentation(mesh_data, opt)
     mesh_data.features = extract_features(mesh_data)
     return mesh_data
+
 
 def fill_from_file(mesh, file):
     mesh.filename = ntpath.split(file)[1]
@@ -276,6 +281,7 @@ def rebuild_face(face, new_face):
             break
     return face
 
+
 def check_area(mesh, faces):
     face_normals = np.cross(mesh.vs[faces[:, 1]] - mesh.vs[faces[:, 0]],
                             mesh.vs[faces[:, 2]] - mesh.vs[faces[:, 1]])
@@ -406,6 +412,7 @@ def get_normals(mesh, edge_points, side):
     normals /= div[:, np.newaxis]
     return normals
 
+
 def get_opposite_angles(mesh, edge_points, side):
     edges_a = mesh.vs[edge_points[:, side // 2]] - mesh.vs[edge_points[:, side // 2 + 2]]
     edges_b = mesh.vs[edge_points[:, 1 - side // 2]] - mesh.vs[edge_points[:, side // 2 + 2]]
@@ -429,12 +436,14 @@ def get_ratios(mesh, edge_points, side):
     d = np.linalg.norm(point_o - closest_point, ord=2, axis=1)
     return d / edges_lengths
 
+
 def fixed_division(to_div, epsilon):
     if epsilon == 0:
         to_div[to_div == 0] = 0.1
     else:
         to_div += epsilon
     return to_div
+
 
 class Mesh:
     def __init__(self, file, opt=None):

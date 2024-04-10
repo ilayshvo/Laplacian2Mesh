@@ -1,6 +1,6 @@
 libigl==2.5.1
 matplotlib==3.4.3
-numpy==1.26.0
+numpy==1.26.4
 potpourri3d==0.0.7
 robust_laplacian==0.2.4
 scikit_learn==1.4.1.post1

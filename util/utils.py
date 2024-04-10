@@ -188,12 +188,12 @@ class LabelSmoothingCrossEntropy(nn.Module):
 
 
 def segmentation_loss(pred, gt, mesh_path, weight, device, loss_rate=1.8, bandwidth=1.0):
-    class_weight = weight[gt[gt != -1]].to(device)
+    cpu_gt = gt.clone().to("cpu")
+    class_weight = weight[cpu_gt[cpu_gt != -1]].to(device)
 
     criterion = LabelSmoothingCrossEntropy().to(device)
-
     adjacency = LossAdjacency().to(device)
-    loss_neighbor = adjacency(pred, gt, mesh_path, device, bandwidth)
+    loss_neighbor = adjacency(pred, cpu_gt, mesh_path, device, bandwidth)
 
     loss = criterion(pred[gt != -1], gt[gt != -1], class_weight) + loss_rate * loss_neighbor
 

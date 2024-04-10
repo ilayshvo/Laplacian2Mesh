@@ -242,7 +242,7 @@ if __name__ == '__main__':
     if args.mode == 'train':
 
         # Use wandb to visualize the training process
-        wandb.init(project='lap_seg', entity='laplacian2mesh', config=args, name=args.name, sync_tensorboard=True)
+        wandb.init(project='laplacian2mesh', config=args, name=args.name, sync_tensorboard=True)
         wandb.watch(net, log="gradients", log_graph=False)
         # tensorboard
         writer = SummaryWriter(os.path.join('checkpoints', args.name, 'log_dir'))
